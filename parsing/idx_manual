@@ -1,0 +1,10 @@
+cmd : 0
+just print : 1
+space : 2
+" (d_quote) : 3
+' (s_quote) : 4
+$ (env_name) : 5
+< : 6
+> : 7
+| (pipe) : 8
+
