@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/02 22:07:27 by ylee             ###   ########.fr       */
+/*   Updated: 2021/07/02 23:01:58 by ylee             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int	s_quote(char *line, int *changed, int i)
 			break;
 		}
 	}
+	if (!line[i] && changed[i - 1] != 4)
+		printf("syntax error\n");
 	return (i);
 }
 
@@ -78,6 +80,8 @@ int	d_quote(char *line, int *changed, int i)
 			break;
 		}
 	}
+	if (!line[i] && changed[i - 1] != 3)
+		printf("syntax error\n");
 	return (i);
 }
 
@@ -136,6 +140,12 @@ int	main(int argc, char **argv, char **envp)
 	parsing(line);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee | wc -l";
+	parsing(line);
+	printf("test3\n");
+	line = "echo \"$PATH* is here";
+	parsing(line);
+	printf("test4\n");
+	line = "echo \'$PWD is here";
 	parsing(line);
 	return (0);
 }
