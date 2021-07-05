@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/05 20:19:28 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/05 21:01:00 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ int	parsing(char *line, t_all *a)
 void	struct_init(t_all *a)
 {
 	a->redir_list = (t_list *)malloc(sizeof(t_list));
+	a->pipe_cnt = 0;
 	a->next = NULL;
 	a->redir_list->next = NULL;
 	a->redir_list->redir_flag = 0;

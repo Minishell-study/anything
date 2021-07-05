@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:09:50 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/05 20:50:32 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/05 20:58:28 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct		s_list  // 아무것도 없으면 0 / < 1 / > 2 / << 3 / >> 4
 typedef	struct		s_all{
 	char			*line_cut;
 	int				*int_line_cut;
+	int				pipe_cnt;
 	char			*cmd;
 	char			**arg;
 	t_list			*redir_list;
