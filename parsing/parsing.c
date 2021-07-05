@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/02 23:01:58 by ylee             ###   ########.fr       */
+/*   Updated: 2021/07/05 20:19:28 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int redir_name(char *line, int *changed, int i)
 	if (line[i] == '<')
 	{
 		changed[i] = 6;
+		
 	}
 	else if (line[i] == '>')
 	{
@@ -85,7 +86,7 @@ int	d_quote(char *line, int *changed, int i)
 	return (i);
 }
 
-int	parsing(char *line)
+int	parsing(char *line, t_all *a)
 {
 	int		i;
 	int		*changed;
@@ -120,32 +121,38 @@ int	parsing(char *line)
 		i++;
 	}
 	printf("fin?\n");
-	i = 0;
-	while (i < length)
-	{
-		printf("%c : %d\n", line[i], changed[i]);
-		i++;
-	}
+	cutting_int_line(line, changed, a);
 	return (0);
+}
+
+void	struct_init(t_all *a)
+{
+	a->redir_list = (t_list *)malloc(sizeof(t_list));
+	a->next = NULL;
+	a->redir_list->next = NULL;
+	a->redir_list->redir_flag = 0;
+	a->redir_list->file = NULL;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
+	t_all	a;
 
 	if (argc != 1 || !argv || !envp)
 		return (0);
-	printf("test1\n");
-	line = "hello \"inyang\". I`m \'ylee\'. good bye~ $PWD";
-	parsing(line);
+	struct_init(&a);
+	// printf("test1\n");
+	// line = "hello \"inyang\". I`m \'ylee\'. good bye~ $PWD";
+	// parsing(line);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee | wc -l";
-	parsing(line);
-	printf("test3\n");
-	line = "echo \"$PATH* is here";
-	parsing(line);
-	printf("test4\n");
-	line = "echo \'$PWD is here";
-	parsing(line);
+	parsing(line, &a);
+	// printf("test3\n");
+	// line = "echo \"$PATH* is here";
+	// parsing(line);
+	// printf("test4\n");
+	// line = "echo \'$PWD is here";
+	// parsing(line);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:09:50 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/02 19:34:54 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/05 20:50:32 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,28 +18,26 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
-typedef struct	s_flag{
-	int			double_quote;
-	int			single_quote;
-	int			pipe;
-	int			redirection;
-	int			double_redirection;
-}				t_flag;
+typedef struct		s_list  // 아무것도 없으면 0 / < 1 / > 2 / << 3 / >> 4
+{
+	int				redir_flag;
+	char			*file;
+	struct s_list	*next;
+}					t_list;
 
-typedef struct	s_token{
-	char		*token;
-	int			token_len;
-	t_flag		is_in;
-}				t_token;
-
-typedef	struct	s_all{
-	t_token		pipe_token;
-	
-}				t_all;
-
+typedef	struct		s_all{
+	char			*line_cut;
+	int				*int_line_cut;
+	char			*cmd;
+	char			**arg;
+	t_list			*redir_list;
+	struct s_all	*next;
+}					t_all;
 
 char			**ft_split(char const *s, char c);
 int				px_gnl(char **line);
 int				px_strlen(char *s);
+void	cutting_int_line(char *line, int *changed, t_all *a);
 
+char		*ft_strdup(const char *src);
 #endif

@@ -8,3 +8,10 @@ $ (env_name) : 5
 > : 7
 | (pipe) : 8
 
+
+redirection
+nothing : 0
+redir_left : 1
+redir_right : 2
+redir_double_left : 3
+redir_double_right : 4

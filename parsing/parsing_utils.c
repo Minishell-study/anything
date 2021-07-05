@@ -6,101 +6,83 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 19:33:58 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/02 19:34:02 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/05 20:55:38 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-static size_t	ft_cnt(char const *s, char c)
+char		*ft_strdup(const char *src)
 {
-	size_t	cnt;
-
-	cnt = 0;
-	while (*s)
-	{
-		if (*s == c)
-			s++;
-		else
-		{
-			while (*s && *s != c)
-				s++;
-			cnt++;
-		}
-	}
-	return (cnt);
-}
-
-static int		ft_n_malloc(char **all, size_t k, size_t cnt)
-{
-	if (!(all[k] = malloc(cnt + 1)))
-	{
-		while (k > 0)
-		{
-			k--;
-			free(all[k]);
-		}
-		free(all);
-		return (1);
-	}
-	return (0);
-}
-
-static size_t	ft_index(size_t *i, char const *s, char c)
-{
-	size_t	cnt;
-
-	cnt = 0;
-	while (s[*i] != c && s[*i])
-	{
-		(*i)++;
-		cnt++;
-	}
-	return (cnt);
-}
-
-static int		ft_fill(char const *s, char c, char **all)
-{
-	size_t	i;
-	size_t	j;
-	size_t	k;
-	size_t	l;
-	size_t	cnt;
+	char	*result;
+	int		i;
 
 	i = 0;
-	k = 0;
-	while (s[i])
+	while (src[i])
+		i++;
+	result = (char *)malloc(sizeof(char) * i + 1);
+	if (result == 0)
+		return (0);
+	i = 0;
+	while (src[i])
 	{
-		while (s[i] == c)
-			i++;
-		if (!s[i])
-			break ;
-		cnt = ft_index(&i, s, c);
-		if (ft_n_malloc(all, k, cnt))
-			return (1);
-		l = 0;
-		j = i - cnt;
-		while (j < i)
-			all[k][l++] = (char)s[j++];
-		all[k++][l] = '\0';
+		result[i] = src[i];
+		i++;
 	}
-	return (0);
+	result[i] = '\0';
+	return (result);
 }
 
-char			**ft_split(char const *s, char c)
+t_all	*make_next_page(void)
 {
-	size_t	len;
-	char	**all;
+	t_all *a;
 
-	if (!s)
-		return (NULL);
-	len = ft_cnt(s, c);
-	if (!(all = malloc(sizeof(char *) * (len + 1))))
-		return (NULL);
-	if (ft_fill(s, c, all))
-		return (NULL);
-	all[len] = NULL;
-	return (all);
+	a = (t_all *)malloc(sizeof(t_all));
+	a->redir_list = (t_list *)malloc(sizeof(t_list));
+	a->next = NULL;
+	a->redir_list->next = NULL;
+	a->redir_list->redir_flag = 0;
+	a->redir_list->file = NULL;
+	return (a);
+}
+
+void	cutting_int_line(char *line, int *changed, t_all *a)
+{
+	int		strlen;
+	char	*line_dup;
+	t_all 	*b;
+	
+	b = a;
+	line_dup = ft_strdup(line);
+	strlen = px_strlen(line);
+	printf("%s\n", line);
+	printf("dup %s\n", line_dup);
+	printf("%d\n", strlen);
+	int i = 0;
+	while (i < strlen)
+		printf("%d", changed[i++]);
+	printf("\n");
+	i = 0;
+	int j = 0;
+	while (i < strlen)
+	{
+		if (changed[i] == 8)
+		{
+			b->next = make_next_page();
+			line_dup[i] = '\0';
+			b->line_cut = ft_strdup(&line_dup[j]);
+			j = i + 2;
+			b = b->next;
+		}
+		printf("%d", changed[i]);
+		i++;
+	}
+	if (b)
+		b->line_cut = ft_strdup(&line_dup[j]);
+	printf("\n\na->line_cut %s\n", a->line_cut);
+	printf("a->next->line_cut %s\n", a->next->line_cut);
+	printf("a->next->line_cut %s\n", a->next->next->line_cut);
+	free(line_dup);
 }
 
 int		px_strlen(char *s)
