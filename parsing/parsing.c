@@ -6,26 +6,77 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/05 21:01:00 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/06 01:04:09 by ylee             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+int	left_name(char *line, int *changed, int i)
+{
+	if (line[i + 1] == ' ')
+	{
+		changed[i + 1] = 6;
+		i = i + 2;
+	}
+	else if (line[i + 1] == '<' && line[i + 2] == ' ')
+	{
+		changed[i + 1] = 6;
+		changed[i + 2] = 6;
+		i = i + 3;
+	}
+	else
+		return (-1);
+	if (!line[i])
+	{
+		printf("redirection arg missing\n");
+		return (-1);
+	}
+	while (line[i] && line[i] != ' ')
+		changed[i++] = 6;
+	return (i);
+}
+
+int	right_name(char *line, int *changed, int i)
+{
+	if (line[i + 1] == ' ')
+	{
+		changed[i + 1] = 7;
+		i = i + 2;
+	}
+	else if (line[i + 1] == '>' && line[i + 2] == ' ')
+	{
+		changed[i + 1] = 7;
+		changed[i + 2] = 7;
+		i = i + 3;
+	}
+	else
+		return (-1);
+	if (!line[i])
+	{
+		printf("redirection arg missing\n");
+		return (-1);
+	}
+	while (line[i] && line[i] != ' ')
+		changed[i++] = 7;
+	return (i);
+}
 
 int redir_name(char *line, int *changed, int i)
 {
 	if (line[i] == '<')
 	{
 		changed[i] = 6;
-		
+		i = left_name(line, changed, i);
 	}
 	else if (line[i] == '>')
 	{
 		changed[i] = 7;
+		i = right_name(line, changed, i);
 	}
-	else
-		printf("error redir_name\n");
-	return (i);
+	if (i < 0)
+		printf("syntax error\n");
+	return (i - 1);
 }
 
 int	env_name(char *line, int *changed, int i)
@@ -86,19 +137,10 @@ int	d_quote(char *line, int *changed, int i)
 	return (i);
 }
 
-int	parsing(char *line, t_all *a)
+void	line_to_changed(char *line, int *changed)
 {
 	int		i;
-	int		*changed;
-	int		length;
 
-	length = px_strlen(line);
-	changed = (int *)malloc(sizeof(int) * length);
-	i = 0;
-	while (i < length)
-		changed[i++] = 1111111;
-	printf("%s\n", line);
-	printf("%d\n", length);
 	i = 0;
 	while (line[i])
 	{
@@ -118,11 +160,10 @@ int	parsing(char *line, t_all *a)
 			changed[i] = 8;
 		else 
 			changed[i] = 9;
+		if (i < 0)
+			break ;
 		i++;
 	}
-	printf("fin?\n");
-	cutting_int_line(line, changed, a);
-	return (0);
 }
 
 void	struct_init(t_all *a)
@@ -135,20 +176,57 @@ void	struct_init(t_all *a)
 	a->redir_list->file = NULL;
 }
 
+t_all	*parsing(char *line)
+{
+	int		i;
+	int		*changed;
+	int		length;
+	t_all	a;
+
+	length = px_strlen(line);
+	changed = (int *)malloc(sizeof(int) * length);
+	i = 0;
+	while (i < length)
+		changed[i++] = 1111111;
+	printf("%s\n", line);
+	printf("%d\n", length);
+	line_to_changed(line, changed);
+	printf("fin?\n");
+	i = 0;
+	printf("%s\n", line);
+	while (line[i])
+	{
+		if (changed[i] == 1111111)
+			return (0);
+		printf("%d", changed[i]);
+		i++;
+	}
+	printf("\n");
+	struct_init(&a);
+	cutting_int_line(line, changed, &a);
+	return (0);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
-	t_all	a;
+//	t_all	a;
 
 	if (argc != 1 || !argv || !envp)
 		return (0);
-	struct_init(&a);
+//	struct_init(&a);
 	// printf("test1\n");
 	// line = "hello \"inyang\". I`m \'ylee\'. good bye~ $PWD";
 	// parsing(line);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee | wc -l";
-	parsing(line, &a);
+	parsing(line);
+	printf("test2\n");
+	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee";
+	parsing(line);
+	printf("test2\n");
+	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ";
+	parsing(line);
 	// printf("test3\n");
 	// line = "echo \"$PATH* is here";
 	// parsing(line);
