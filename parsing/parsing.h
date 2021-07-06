@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:09:50 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/05 20:58:28 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/06 21:38:05 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
+
+typedef struct		s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
 
 typedef struct		s_list  // 아무것도 없으면 0 / < 1 / > 2 / << 3 / >> 4
 {

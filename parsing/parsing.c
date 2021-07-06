@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/06 01:04:09 by ylee             ###   ########.fr       */
+/*   Updated: 2021/07/06 21:27:12 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,12 +176,11 @@ void	struct_init(t_all *a)
 	a->redir_list->file = NULL;
 }
 
-t_all	*parsing(char *line)
+void	parsing(char *line, t_all *a)
 {
 	int		i;
 	int		*changed;
 	int		length;
-	t_all	a;
 
 	length = px_strlen(line);
 	changed = (int *)malloc(sizeof(int) * length);
@@ -202,15 +201,15 @@ t_all	*parsing(char *line)
 		i++;
 	}
 	printf("\n");
-	struct_init(&a);
-	cutting_int_line(line, changed, &a);
+	struct_init(a);
+	cutting_int_line(line, changed, a);
 	return (0);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
-//	t_all	a;
+	t_all	a;
 
 	if (argc != 1 || !argv || !envp)
 		return (0);
@@ -220,13 +219,13 @@ int	main(int argc, char **argv, char **envp)
 	// parsing(line);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee | wc -l";
-	parsing(line);
+	parsing(line, &a);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee";
-	parsing(line);
+	parsing(line, &a);
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ";
-	parsing(line);
+	parsing(line, &a);
 	// printf("test3\n");
 	// line = "echo \"$PATH* is here";
 	// parsing(line);
