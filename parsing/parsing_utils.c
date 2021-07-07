@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 19:33:58 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/06 01:06:59 by ylee             ###   ########.fr       */
+/*   Updated: 2021/07/07 18:58:43 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,40 @@ char		*ft_strdup(const char *src)
 	}
 	result[i] = '\0';
 	return (result);
+}
+
+void	changed_line_cut(char *line, int *changed, t_all *a)
+{
+	t_all *b;
+	int	strlen;
+	int	i;
+	int	j;
+
+	b = a;
+	i = 0;
+	while (b)
+	{
+		j = 0;
+		strlen = px_strlen(b->line_cut);
+		b->int_line_cut = malloc(sizeof(int) * strlen);
+		if (changed[i] == 8)
+			i += 1;
+		if (changed[i] == 2)
+			i += 1;
+		while (j < strlen)
+		{
+			b->int_line_cut[j] = changed[i];
+			i++;
+			j++;
+		}
+		printf(">>>>>>line in page %s\n>>>>>>int line in page ", b->line_cut);
+		int k = 0;
+		while (k < strlen)
+			printf("%d", b->int_line_cut[k++]);
+		printf("\n");
+		i++;
+		b = b->next;
+	}
 }
 
 t_all	*make_next_page(void)

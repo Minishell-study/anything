@@ -6,13 +6,13 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/06 21:27:12 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/07 19:36:51 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	left_name(char *line, int *changed, int i)
+int	left_name(char *line, int *changed, int i, t_all *a)
 {
 	if (line[i + 1] == ' ')
 	{
@@ -37,7 +37,7 @@ int	left_name(char *line, int *changed, int i)
 	return (i);
 }
 
-int	right_name(char *line, int *changed, int i)
+int	right_name(char *line, int *changed, int i, t_all *a)
 {
 	if (line[i + 1] == ' ')
 	{
@@ -62,17 +62,17 @@ int	right_name(char *line, int *changed, int i)
 	return (i);
 }
 
-int redir_name(char *line, int *changed, int i)
+int redir_name(char *line, int *changed, int i, t_all *a)
 {
 	if (line[i] == '<')
 	{
 		changed[i] = 6;
-		i = left_name(line, changed, i);
+		i = left_name(line, changed, i, a);
 	}
 	else if (line[i] == '>')
 	{
 		changed[i] = 7;
-		i = right_name(line, changed, i);
+		i = right_name(line, changed, i, a);
 	}
 	if (i < 0)
 		printf("syntax error\n");
@@ -137,7 +137,7 @@ int	d_quote(char *line, int *changed, int i)
 	return (i);
 }
 
-void	line_to_changed(char *line, int *changed)
+void	line_to_changed(char *line, int *changed, t_all *a)
 {
 	int		i;
 
@@ -155,7 +155,7 @@ void	line_to_changed(char *line, int *changed)
 		else if (line[i] == '$')
 			i = env_name(line, changed, i);
 		else if (line[i] == '<' || line[i] == '>')
-			i = redir_name(line, changed, i);
+			i = redir_name(line, changed, i, a);
 		else if (line[i] == '|') 
 			changed[i] = 8;
 		else 
@@ -164,6 +164,17 @@ void	line_to_changed(char *line, int *changed)
 			break ;
 		i++;
 	}
+}
+
+t_list	*make_next_flag_list(t_all *a)
+{
+	t_list	*l;
+
+	l = (t_list *)malloc(sizeof(t_list));
+	l->redir_flag = 0;
+	l->file = NULL;
+	l->next = NULL;
+	return (l);
 }
 
 void	struct_init(t_all *a)
@@ -189,21 +200,21 @@ void	parsing(char *line, t_all *a)
 		changed[i++] = 1111111;
 	printf("%s\n", line);
 	printf("%d\n", length);
-	line_to_changed(line, changed);
+	struct_init(a);
+	line_to_changed(line, changed, a);
 	printf("fin?\n");
 	i = 0;
 	printf("%s\n", line);
 	while (line[i])
 	{
 		if (changed[i] == 1111111)
-			return (0);
+			return ;
 		printf("%d", changed[i]);
 		i++;
 	}
 	printf("\n");
-	struct_init(a);
 	cutting_int_line(line, changed, a);
-	return (0);
+	changed_line_cut(line, changed, a);
 }
 
 int	main(int argc, char **argv, char **envp)
