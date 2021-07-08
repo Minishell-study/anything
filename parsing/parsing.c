@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/07 19:36:51 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/08 15:53:44 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,7 @@ void	parsing(char *line, t_all *a)
 	printf("\n");
 	cutting_int_line(line, changed, a);
 	changed_line_cut(line, changed, a);
+	check_arguments(a);
 }
 
 int	main(int argc, char **argv, char **envp)
