@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/09 16:41:08 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 03:42:33 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ void	struct_init(t_all *a)
 	a->redir_list = (t_list *)malloc(sizeof(t_list));
 	a->pipe_cnt = 0;
 	a->next = NULL;
+	// a->cmd = NULL;
 	a->redir_list->next = NULL;
 	a->redir_list->redir_flag = 0;
 	a->redir_list->file = NULL;
@@ -199,12 +200,12 @@ void	parsing(char *line, t_all *a)
 	while (i < length)
 		changed[i++] = 1111111;
 	printf("%s\n", line);
-	printf("%d\n", length);
+	// printf("%d\n", length);
 	struct_init(a);
 	line_to_changed(line, changed, a);
-	printf("fin?\n");
+	// printf("fin?\n");
 	i = 0;
-	printf("%s\n", line);
+	// printf("%s\n", line);
 	while (line[i])
 	{
 		if (changed[i] == 1111111)
@@ -229,15 +230,26 @@ int	main(int argc, char **argv, char **envp)
 	// printf("test1\n");
 	// line = "hello \"inyang\". I`m \'ylee\'. good bye~ $PWD";
 	// parsing(line);
-	printf("test2\n");
+	printf("**********************************\n");
+	printf("test1\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee | wc -l";
 	parsing(line, &a);
+	printf("**********************************\n");
 	printf("test2\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ylee";
 	parsing(line, &a);
-	printf("test2\n");
+	printf("**********************************\n");	
+	printf("test3\n");
 	line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ";
 	parsing(line, &a);
+	// system("leaks a.out");
+	printf("**********************************\n");
+	printf("test4\n");
+	line = "< flag | << flag | > flag | >> flag";
+	parsing(line, &a);
+	// printf("test5\n");
+	// line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ";
+	// parsing(line, &a);
 	// printf("test3\n");
 	// line = "echo \"$PATH* is here";
 	// parsing(line);

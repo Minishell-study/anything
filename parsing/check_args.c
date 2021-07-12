@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 16:17:22 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/13 02:10:49 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 03:40:50 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,11 @@ static int		ft_fill(int *int_line, char const *s, int c, char **all, int strlen)
 	/* 무슨 문장 들어왔나 체크용 */
 	printf("command line : %s\n",s);
 	/* 여기까지 */
-	while (i < strlen)
+	while (i <= strlen)
 	{
-		while (int_line[i] == c)
+		while (int_line[i] == c && i < strlen)
 			i++;
-		if (i == strlen)
+		if (i >= strlen)
 			break ;
 		cnt = ft_index(i, int_line, c, strlen);
 		i += cnt;
@@ -95,7 +95,7 @@ static int		ft_fill(int *int_line, char const *s, int c, char **all, int strlen)
 	return (0);
 }
 
-char			**ft_split(int *int_line, char *s, int c)
+char			**split_args(int *int_line, char *s, int c)
 {
 	size_t	len;
 	char	**all;
@@ -117,16 +117,51 @@ char			**ft_split(int *int_line, char *s, int c)
 void		check_arguments(t_all *a)
 {
 	int		i;
+	int		j;
 	t_all	*b;
 
-	i = 0;
 	b = a;
 	while (b)
 	{
 		printf("\n->->-> split start point <-<-<-\n");
-		b->arg = ft_split(b->int_line_cut, b->line_cut, 2);
-		if (b->int_line_cut[0] == 0)
-			b->cmd = b->arg[0];
+		b->cmd = NULL; // 초기화를 여기서 하지 않고 init에서 하면 세그폴트가 남 왜??
+		b->arg = split_args(b->int_line_cut, b->line_cut, 2);
+		i = -1;
+		while (b->arg[++i])
+		{
+			j = 0;
+			if (b->arg[i][j] == '>')
+			{
+				if (b->arg[i][j + 1] == '>' && b->arg[i][j + 2] == ' ')
+				{
+					j = j + 3;
+					b->redir_list->redir_flag = 4;
+				}
+				else if (b->arg[i][j + 1] == ' ')
+				{
+					j = j + 2;
+					b->redir_list->redir_flag = 2;
+				}
+				b->redir_list->file = ft_strdup(&b->arg[i][j]);
+			}
+			else if (b->arg[i][j] == '<')
+			{
+				if (b->arg[i][j + 1] == '<' && b->arg[i][j + 2] == ' ')
+				{
+					j = j + 3;
+					b->redir_list->redir_flag = 3;
+				}
+				else if (b->arg[i][j + 1] == ' ')
+				{
+					j = j + 2;
+					b->redir_list->redir_flag = 1;
+				}
+				b->redir_list->file = ft_strdup(&b->arg[i][j]);
+			}
+			else
+				b->cmd = b->arg[0];
+		}
+			// else if (b->arg[0][i] == '<')
 		/* 잘 들어갔나 체크용 */
 		printf("********* result *********\n");
 		printf("b->cmd = %s\n", b->cmd);
@@ -135,6 +170,7 @@ void		check_arguments(t_all *a)
 		{
 			printf("arg[%d] %s\n", k, b->arg[k]);
 			k++;
+			printf("%d %s\n",b->redir_list->redir_flag, b->redir_list->file);
 		}
 		/* 여기까지 지우기 */
 		b = b->next;

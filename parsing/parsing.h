@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:09:50 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/09 16:41:22 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 02:44:00 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef	struct		s_all{
 	struct s_all	*next;
 }					t_all;
 
-char			**ft_split(int *int_line, char *s, int c);
+char			**split_args(int *int_line, char *s, int c);
 int				px_gnl(char **line);
 int				px_strlen(char *s);
 void			cutting_int_line(char *line, int *changed, t_all *a);
