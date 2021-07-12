@@ -6,13 +6,13 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 16:17:22 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/09 17:43:38 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 02:10:49 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-static size_t	ft_cnt(int *s, int c)
+static size_t	ft_cnt(int *s, int c, int strlen)
 {
 	size_t	cnt;
 	int		*tmp;
@@ -21,24 +21,14 @@ static size_t	ft_cnt(int *s, int c)
 	cnt = 0;
 	tmp = s;
 	i = 0;
-	while (tmp)
+	while (i < strlen)
 	{
-		printf("%d, ", *tmp);
-		tmp++;
-		i++;
-	}
-	printf("*****************\n");
-	printf("%d", i);
-	while (*s)
-	{
-		printf("<<<<<<<<<<<<<<<<<\n");
-		printf("ft_cnt // *s : %d ,  c : %d\n", *s, c);
-		if (*s == c)
-			s++;
+		if (tmp[i] == c)
+			i++;
 		else
 		{
-			while (*s && *s != c)
-				s++;
+			while (i <= strlen && tmp[i] != c)
+				i++;
 			cnt++;
 		}
 	}
@@ -60,20 +50,20 @@ static int		ft_n_malloc(char **all, size_t k, size_t cnt)
 	return (0);
 }
 
-static size_t	ft_index(size_t *i, int *s, int c)
+static size_t	ft_index(size_t i, int *s, int c, int strlen)
 {
 	size_t	cnt;
 
 	cnt = 0;
-	while (s[*i] != c && s[*i])
+	while (s[i] != c && i < strlen)
 	{
-		(*i)++;
+		i++;
 		cnt++;
 	}
 	return (cnt);
 }
 
-static int		ft_fill(int *int_line, char const *s, int c, char **all)
+static int		ft_fill(int *int_line, char const *s, int c, char **all, int strlen)
 {
 	size_t	i;
 	size_t	j;
@@ -83,13 +73,17 @@ static int		ft_fill(int *int_line, char const *s, int c, char **all)
 
 	i = 0;
 	k = 0;
-	while (int_line[i])
+	/* 무슨 문장 들어왔나 체크용 */
+	printf("command line : %s\n",s);
+	/* 여기까지 */
+	while (i < strlen)
 	{
 		while (int_line[i] == c)
 			i++;
-		if (!int_line[i])
+		if (i == strlen)
 			break ;
-		cnt = ft_index(&i, int_line, c);
+		cnt = ft_index(i, int_line, c, strlen);
+		i += cnt;
 		if (ft_n_malloc(all, k, cnt))
 			return (1);
 		l = 0;
@@ -105,19 +99,17 @@ char			**ft_split(int *int_line, char *s, int c)
 {
 	size_t	len;
 	char	**all;
+	int		strlen;
 
 	if (!s)
 		return (NULL);
-	len = ft_cnt(int_line, c);
-	printf("\n\n******ft_cnt return %zu\n", len);
+	strlen = px_strlen(s);
+	len = ft_cnt(int_line, c, strlen);
 	if (!(all = malloc(sizeof(char *) * (len + 1))))
 		return (NULL);
 	int check;
-	if ((check = ft_fill(int_line, s, c, all)) != 0)
-	{
-		printf("\n\n*****ft_fill return %d\n", check);
+	if ((check = ft_fill(int_line, s, c, all, strlen)) != 0)
 		return (NULL);
-	}
 	all[len] = NULL;
 	return (all);
 }
@@ -125,44 +117,27 @@ char			**ft_split(int *int_line, char *s, int c)
 void		check_arguments(t_all *a)
 {
 	int		i;
-	int		j;
-	int		k;
-	char	*line_dup;
-	char	**line_dup_zip;
 	t_all	*b;
-	int		cnt_two;
 
 	i = 0;
 	b = a;
-	// while (b->line_cut[i])
-	// {
-	// 	if (b->line_cut[i] == 2)
-	// 		cnt_two++;
-	// 	i++;
-	// }
-	// line_dup_zip = ft_calloc(sizeof(char *), (cnt_two + 1);
-	// i = 0;
-	// j = 0;
-	// k = 0;
 	while (b)
 	{
+		printf("\n->->-> split start point <-<-<-\n");
 		b->arg = ft_split(b->int_line_cut, b->line_cut, 2);
-		printf("엥ㅇㅇ레노매돌ㄴㅁ디럼니댜ㅜㄹ미\n");
-		printf("arg[0] %s\n", b->arg[0]);
-		// while (int_line_cut[i])
-		// {
-		// 	if (int_line_cut[i] == 2)
-		// 	{
-		// 		line_dup[i] = '\0';
-		// 		line_dup_zip[k] = ft_strdup(&line_dup[j]);
-		// 		j = i + 1;
-		// 		k++;
-		// 	}
-		// 	i++;
-		// }
-		// k = 0;
-		// while (k)
-		// 	printf("*******************************%s\n", b->arg[k++]);
+		if (b->int_line_cut[0] == 0)
+			b->cmd = b->arg[0];
+		/* 잘 들어갔나 체크용 */
+		printf("********* result *********\n");
+		printf("b->cmd = %s\n", b->cmd);
+		int k = 0;
+		while (b->arg[k])
+		{
+			printf("arg[%d] %s\n", k, b->arg[k]);
+			k++;
+		}
+		/* 여기까지 지우기 */
 		b = b->next;
 	}
+	printf("\n\n");
 }
