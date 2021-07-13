@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 16:17:22 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/13 03:40:50 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 22:30:47 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ void		check_arguments(t_all *a)
 	int		i;
 	int		j;
 	t_all	*b;
+	t_list	*head;
 
 	b = a;
 	while (b)
@@ -126,9 +127,17 @@ void		check_arguments(t_all *a)
 		printf("\n->->-> split start point <-<-<-\n");
 		b->cmd = NULL; // 초기화를 여기서 하지 않고 init에서 하면 세그폴트가 남 왜??
 		b->arg = split_args(b->int_line_cut, b->line_cut, 2);
+		head = b->redir_list;
 		i = -1;
 		while (b->arg[++i])
 		{
+			if (b->redir_list->redir_flag != 0)
+			{
+				// printf("is you in\n");
+				b->redir_list->next = make_next_flag_list(b);
+				// b->redir_list->next->prev = b->redir_list;
+				b->redir_list = b->redir_list->next;
+			}
 			j = 0;
 			if (b->arg[i][j] == '>')
 			{
@@ -146,6 +155,7 @@ void		check_arguments(t_all *a)
 			}
 			else if (b->arg[i][j] == '<')
 			{
+				// printf("here\n");
 				if (b->arg[i][j + 1] == '<' && b->arg[i][j + 2] == ' ')
 				{
 					j = j + 3;
@@ -157,20 +167,31 @@ void		check_arguments(t_all *a)
 					b->redir_list->redir_flag = 1;
 				}
 				b->redir_list->file = ft_strdup(&b->arg[i][j]);
+				// printf("%d, %s\n", b->redir_list->redir_flag, b->redir_list->file);
 			}
 			else
-				b->cmd = b->arg[0];
+			{
+				if (i == 0)
+					b->cmd = b->arg[0];
+				else if (i > 0 && b->cmd == NULL)
+					b->cmd = b->arg[i];
+			}
 		}
-			// else if (b->arg[0][i] == '<')
+		b->redir_list = head;
 		/* 잘 들어갔나 체크용 */
 		printf("********* result *********\n");
-		printf("b->cmd = %s\n", b->cmd);
+		printf("b->cmd = |%s|\n", b->cmd);
 		int k = 0;
 		while (b->arg[k])
 		{
 			printf("arg[%d] %s\n", k, b->arg[k]);
+			// printf("%d %s\n",b->redir_list->redir_flag, b->redir_list->file);
+			while (b->redir_list)
+			{
+				printf("%d %s\n",b->redir_list->redir_flag, b->redir_list->file);
+				b->redir_list = b->redir_list->next;
+			}
 			k++;
-			printf("%d %s\n",b->redir_list->redir_flag, b->redir_list->file);
 		}
 		/* 여기까지 지우기 */
 		b = b->next;

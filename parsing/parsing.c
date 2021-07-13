@@ -6,7 +6,7 @@
 /*   By: inyang <inyang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 16:11:14 by inyang            #+#    #+#             */
-/*   Updated: 2021/07/13 03:42:33 by inyang           ###   ########.fr       */
+/*   Updated: 2021/07/13 22:11:22 by inyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void	struct_init(t_all *a)
 	a->pipe_cnt = 0;
 	a->next = NULL;
 	// a->cmd = NULL;
+	// a->redir_list->prev = NULL;
 	a->redir_list->next = NULL;
 	a->redir_list->redir_flag = 0;
 	a->redir_list->file = NULL;
@@ -247,9 +248,9 @@ int	main(int argc, char **argv, char **envp)
 	printf("test4\n");
 	line = "< flag | << flag | > flag | >> flag";
 	parsing(line, &a);
-	// printf("test5\n");
-	// line = "echo \'$PWD is here\' and \"$PWD is here\" | cat << ";
-	// parsing(line, &a);
+	printf("test5\n");
+	line = "cat a > b | << flag cat > re";
+	parsing(line, &a);
 	// printf("test3\n");
 	// line = "echo \"$PATH* is here";
 	// parsing(line);
